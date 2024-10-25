@@ -2,6 +2,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <map>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
 
@@ -10,6 +11,7 @@
 
 using std::map;
 using std::string;
+using json = nlohmann::json;
 
 string fetchUbuntuCloudImageJSONString() {
   CURL* curl;
@@ -35,13 +37,21 @@ string fetchUbuntuCloudImageJSONString() {
 }
 
 TEST_CASE("ubuntuFetch") {
-  string ubuntu_cloud_image_json_string{fetchUbuntuCloudImageJSONString()};
+  json ubuntu_cloud_image_json = json::parse(fetchUbuntuCloudImageJSONString());
 
   SECTION("Get Supported Releases") {
     ubuntuFetch u{};
     vector<string> supported_releases{};
 
-    // do json parsing
+    // parse out supported releases
+
+    // for each product (ubuntu release)
+    for (const auto& [key, value] :
+         ubuntu_cloud_image_json["products"].items()) {
+      // if it is supported and contains the substring "amd64"
+      if (value["supported"] == true && key.find("amd64") != std::string::npos)
+        supported_releases.push_back(value["release_title"]);
+    }
 
     CHECK(u.getSupportedReleases() == supported_releases);
   }
@@ -50,20 +60,37 @@ TEST_CASE("ubuntuFetch") {
     ubuntuFetch u{};
     string current_lts_version{};
 
-    // do json parsing
+    // parse out current lts version
+    // for each product (ubuntu release), looping through keys (exploits the
+    // fact that keys are stored in alphanumeric order to minimize search time)
+    for (const auto& [key, value] :
+         ubuntu_cloud_image_json["products"].items()) {
+      if (key.find("amd64") != std::string::npos &&
+          value["release_title"].get<string>().find("LTS") != std::string::npos)
+        current_lts_version = value["release_title"];
+    }
 
     CHECK(u.getCurrentLTSVersion() == current_lts_version);
   }
 
   SECTION("Get SHA 256 for each Ubuntu Release") {
-    map<string, string> ubuntu_releases_sha256_map{};
     ubuntuFetch u{};
+    string mock_release_number{"24.04"};
     string sha256{};
 
-    // do json parsing (pairing heach ubuntu
-    // release in the cloud image with its sha256 checksum is part of this)
+    // parse out sha256 and compare
+    for (const auto& [key, value] :
+         ubuntu_cloud_image_json["products"].items()) {
+      if (key.find("amd64") != std::string::npos &&
+          value["version"] == mock_release_number) {
+        // exploits the fact that keys are stored in alphanumeric order,
+        // leaving the largest number (and thus, most recent version) at the
+        // end
+        auto current_version = value["versions"].back();
+        sha256 = current_version["items"]["disk1.img"]["sha256"].get<string>();
+      }
+    }
 
-    for (const auto& [release, sha256] : ubuntu_releases_sha256_map)
-      CHECK(u.getSHA256(release) == ubuntu_releases_sha256_map[release]);
+    CHECK(u.getSHA256(mock_release_number) == sha256);
   }
 }
