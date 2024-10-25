@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -8,10 +9,16 @@ using std::string;
 using std::vector;
 
 class ubuntuFetch : public iubuntuFetch {
+ private:
+  string fetchUbuntuCloudImage() const;
+  void parseUbuntuCloudImageJSON(
+      std::function<void(const string&, vector<string>&)> parse_lambda,
+      vector<string>& strings);
+
  public:
   ubuntuFetch() = default;
-  vector<string> getSupportedReleases() const override;
-  string getCurrentLTSVersion() const override;
-  string getSHA256(string release) const override;
+  vector<string> getSupportedReleases() override;
+  string getCurrentLTSVersion() override;
+  string getSHA256(string release) override;
   ~ubuntuFetch() = default;
 };

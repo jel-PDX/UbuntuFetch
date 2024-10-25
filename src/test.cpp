@@ -78,7 +78,7 @@ TEST_CASE("ubuntuFetch") {
     string mock_release_number{"24.04"};
     string sha256{};
 
-    // parse out sha256 and compare
+    // parse out sha256
     for (const auto& [key, value] :
          ubuntu_cloud_image_json["products"].items()) {
       if (key.find("amd64") != std::string::npos &&

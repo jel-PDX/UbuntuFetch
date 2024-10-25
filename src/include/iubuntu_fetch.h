@@ -8,8 +8,8 @@ using std::vector;
 
 class iubuntuFetch {
  public:
-  virtual vector<string> getSupportedReleases() const = 0;
-  virtual string getCurrentLTSVersion() const = 0;
-  virtual string getSHA256(string release) const = 0;
+  virtual vector<string> getSupportedReleases() = 0;
+  virtual string getCurrentLTSVersion() = 0;
+  virtual string getSHA256(string release) = 0;
   virtual ~iubuntuFetch() = default;
 };

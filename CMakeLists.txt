@@ -20,7 +20,7 @@ target_link_libraries(libcurl_util PUBLIC ${CURL_LIBRARIES})
 # Lib ubuntu_fetch
 add_library(ubuntu_fetch src/ubuntu_fetch.cpp)
 target_include_directories(ubuntu_fetch PUBLIC src/include)
-target_link_libraries(ubuntu_fetch PUBLIC ${CURL_LIBRARIES})
+target_link_libraries(ubuntu_fetch PUBLIC libcurl_util nlohmann_json::nlohmann_json)
 
 # Pull in Catch2
 find_package(Catch2 3 REQUIRED)
