@@ -14,11 +14,17 @@ add_library(libcurl_util src/libcurl_util.cpp)
 target_include_directories(libcurl_util PUBLIC src/include ${CURL_INCLUDE_DIR})
 target_link_libraries(libcurl_util PUBLIC ${CURL_LIBRARIES})
 
-# Create main executable
-add_executable(ubuntufetch src/main.cpp)
-target_link_libraries(ubuntufetch ${CURL_LIBRARIES})
+# Lib ubuntu_fetch
+add_library(ubuntu_fetch src/ubuntu_fetch.cpp)
+target_include_directories(ubuntu_fetch PUBLIC src/include)
+target_link_libraries(ubuntu_fetch PUBLIC ${CURL_LIBRARIES})
 
 # Pull in Catch2
 find_package(Catch2 3 REQUIRED)
 add_executable(tests src/test.cpp)
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain ${CURL_LIBRARIES} libcurl_util)
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain ${CURL_LIBRARIES} libcurl_util ubuntu_fetch)
+
+# Create main executable
+add_executable(ubuntufetch src/main.cpp)
+target_link_libraries(ubuntufetch ubuntu_fetch)
+
