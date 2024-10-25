@@ -28,6 +28,7 @@ Produces two executables: `ubuntufetch`, the CLI application, and `tests`, the u
 ## Note for Windows Users
 
 If you are using vcpkg for cmake, you may have to specify your vcpkg cmake path as a flag in your cmake command, such as below (vcpkg should tell you when you install cmake)
+
 `cmake .. -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scriopts/buildsystems/vcpkg.cmake`
 
 # Documentation
