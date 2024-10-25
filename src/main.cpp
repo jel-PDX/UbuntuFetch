@@ -1,23 +1,45 @@
-#include <curl/curl.h>
-
+#include <cstring>
 #include <iostream>
 
-int main() {
-  CURL *curl;
-  CURLcode res;
-  curl_global_init(CURL_GLOBAL_ALL);
+#include "ubuntu_fetch.h"
 
-  curl = curl_easy_init();
+using std::cout;
+using std::endl;
+using std::string;
 
-  if (curl) {
-    curl_easy_setopt(curl, CURLOPT_URL,
-                     "https://cloud-images.ubuntu.com/releases/streams/v1/"
-                     "com.ubuntu.cloud:released:download.json");
-
-    res = curl_easy_perform(curl);
-
-    curl_easy_cleanup(curl);
+int main(int argc, char* argv[]) {
+  if (argc < 2) {
+    cout << "error: invalid args\n\nrun ubuntufetch --help or ubuntufetch -h "
+            "for help\n";
+    return 1;
   }
 
+  string arg1{argv[1]};
+
+  if (arg1 == "--help" || arg1 == "-h") {
+    cout << "flags:\n--supported-releases or -r: fetch supported releases"
+         << "\n--current-lts or -c: fetch current lts release of ubuntu"
+         << "\n--sha256 <release_number> or -s <release_number>: fetch sha256 "
+            "checksum of given release (ex. 24.04)"
+         << "\n\nex:\nubuntufetch --sha256 17.04" << std::endl;
+    return 0;
+  }
+
+  ubuntuFetch u{};
+
+  if (arg1 == "--supported-releases" || arg1 == "-r")
+    for (auto data : u.getSupportedReleases()) cout << data << endl;
+  else if (arg1 == "--current-lts" || arg1 == "-c")
+    cout << u.getCurrentLTSVersion() << endl;
+  else if (arg1 == "--sha256" || arg1 == "-s") {
+    if (argc < 3) {
+      cout << "error: invalid args\n\nrun ubuntufetch --help or ubuntufetch -h "
+              "for help\n";
+      return 1;
+    }
+    cout << u.getSHA256((string)argv[2]) << endl;
+  } else
+    cout << "ERROR: undefined args\n";
+
   return 0;
-}
+};
