@@ -9,6 +9,9 @@ project(UbuntuFetch VERSION 1.0
 # Pull in libcurl
 find_package(CURL REQUIRED)
 
+# Pull in nlohmann json
+find_package(nlohmann_json 3.10.5 REQUIRED)
+
 # Lib libcurl_util
 add_library(libcurl_util src/libcurl_util.cpp)
 target_include_directories(libcurl_util PUBLIC src/include ${CURL_INCLUDE_DIR})
@@ -22,7 +25,7 @@ target_link_libraries(ubuntu_fetch PUBLIC ${CURL_LIBRARIES})
 # Pull in Catch2
 find_package(Catch2 3 REQUIRED)
 add_executable(tests src/test.cpp)
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain ${CURL_LIBRARIES} libcurl_util ubuntu_fetch)
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain ${CURL_LIBRARIES} libcurl_util ubuntu_fetch nlohmann_json::nlohmann_json)
 
 # Create main executable
 add_executable(ubuntufetch src/main.cpp)
