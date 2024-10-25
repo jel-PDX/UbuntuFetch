@@ -1,3 +1,12 @@
+# Dependencies
+
+To build this project, you need:
+
+- cmake 3.30.4 or higher
+- catch2
+- libcurl
+- nlohmann json 3.10.5 or higher
+
 # Build Instructions
 
 ```bash
