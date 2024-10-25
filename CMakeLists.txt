@@ -9,6 +9,11 @@ project(UbuntuFetch VERSION 1.0
 # Pull in libcurl
 find_package(CURL REQUIRED)
 
+# Lib libcurl_util
+add_library(libcurl_util src/libcurl_util.cpp)
+target_include_directories(libcurl_util PUBLIC src/include ${CURL_INCLUDE_DIR})
+target_link_libraries(libcurl_util PUBLIC ${CURL_LIBRARIES})
+
 # Create main executable
 add_executable(ubuntufetch src/main.cpp)
 target_link_libraries(ubuntufetch ${CURL_LIBRARIES})
@@ -16,4 +21,4 @@ target_link_libraries(ubuntufetch ${CURL_LIBRARIES})
 # Pull in Catch2
 find_package(Catch2 3 REQUIRED)
 add_executable(tests src/test.cpp)
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain ${CURL_LIBRARIES})
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain ${CURL_LIBRARIES} libcurl_util)
