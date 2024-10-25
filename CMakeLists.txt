@@ -6,6 +6,10 @@ project(UbuntuFetch VERSION 1.0
 
 
 
+set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_CXX_STANDARD_REQUIRED_ON)
+
 # Pull in libcurl
 find_package(CURL REQUIRED)
 
