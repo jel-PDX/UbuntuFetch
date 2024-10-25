@@ -16,4 +16,4 @@ target_link_libraries(ubuntufetch ${CURL_LIBRARIES})
 # Pull in Catch2
 find_package(Catch2 3 REQUIRED)
 add_executable(tests src/test.cpp)
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain ${CURL_LIBRARIES})
